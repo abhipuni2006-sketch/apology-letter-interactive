@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============ CUSTOMIZE HERE ============
+     - SIGNATURE: change the closing signature line near the bottom of this file (search "SIGNATURE_LINE").
+     - REASONS: edit the REASONS array in the JS to reflect real things about your relationship.
+     - MEMORY_LINE: edit the sentence in step "apology1" to reference something specific if you like.
+     ========================================== */
+
+  :root{
+    --ink-deep: #171029;
+    --ink-mid: #241a3d;
+    --paper: #f4ecdb;
+    --paper-shadow: rgba(23, 16, 41, 0.45);
+    --gold: #c9a461;
+    --gold-soft: #e3cd9c;
+    --rose: #b8677d;
+    --text-on-dark: #ece4f3;
+    --text-on-paper: #2a2036;
+    --text-muted: #6b5f7d;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Work Sans', -apple-system, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    min-height:100vh;
+    background: radial-gradient(ellipse at 50% -10%, var(--ink-mid), var(--ink-deep) 65%);
+    font-family: var(--sans);
+    color: var(--text-on-dark);
+    overflow-x: hidden;
+  }
+
+  .sky{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .star{
+    position: absolute;
+    background: var(--gold-soft);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: twinkle 4s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.85; }
+  }
+
+  .stage{
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+
+  .card{
+    width: 100%;
+    max-width: 560px;
+    background: var(--paper);
+    color: var(--text-on-paper);
+    border-radius: 3px;
+    padding: 56px 48px 44px;
+    box-shadow: 0 30px 70px -20px var(--paper-shadow), 0 0 0 1px rgba(201,164,97,0.25);
+    position: relative;
+    animation: rise 0.7s cubic-bezier(.19,1,.22,1);
+  }
+  @keyframes rise{
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card::before{
+    content: "";
+    position: absolute;
+    top: 18px; left: 18px; right: 18px; bottom: 18px;
+    border: 1px solid rgba(201,164,97,0.35);
+    pointer-events: none;
+  }
+
+  .eyebrow-mark{
+    display:flex;
+    justify-content:center;
+    margin-bottom: 22px;
+  }
+  .eyebrow-mark svg{ width: 22px; height: 22px; opacity: 0.75; }
+
+  h1, h2{
+    font-family: var(--serif);
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 0 0 18px;
+    color: var(--ink-deep);
+  }
+  h1{ font-size: clamp(30px, 6vw, 40px); text-align: center; }
+  h2{ font-size: clamp(26px, 5vw, 32px); }
+
+  p{
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.65;
+    margin: 0 0 16px;
+    color: var(--text-on-paper);
+  }
+  p.lede{
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 18px;
+    font-style: italic;
+  }
+
+  .actions{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .actions.row{
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  button{
+    font-family: var(--sans);
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .btn-primary{
+    background: var(--ink-deep);
+    color: var(--gold-soft);
+    border: none;
+    padding: 14px 26px;
+    border-radius: 2px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .btn-primary:hover{ background: var(--ink-mid); transform: translateY(-1px); }
+  .btn-primary:focus-visible{ outline: 2px solid var(--rose); outline-offset: 3px; }
+
+  .btn-option{
+    background: transparent;
+    border: 1px solid rgba(42,32,54,0.25);
+    color: var(--text-on-paper);
+    padding: 12px 20px;
+    border-radius: 2px;
+    font-size: 15px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .btn-option:hover{ border-color: var(--gold); background: rgba(201,164,97,0.08); }
+  .btn-option:focus-visible{ outline: 2px solid var(--rose); outline-offset: 2px; }
+  .btn-option.selected{
+    border-color: var(--gold);
+    background: rgba(201,164,97,0.15);
+  }
+
+  .btn-link{
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 8px;
+    font-size: 14px;
+    align-self: center;
+  }
+  .btn-link:hover{ color: var(--rose); }
+
+  input[type="text"]{
+    font-family: var(--serif);
+    font-size: 20px;
+    width: 100%;
+    padding: 12px 4px;
+    border: none;
+    border-bottom: 1px solid rgba(42,32,54,0.3);
+    background: transparent;
+    color: var(--text-on-paper);
+    margin-bottom: 8px;
+  }
+  input[type="text"]:focus{
+    outline: none;
+    border-bottom-color: var(--gold);
+  }
+  input[type="text"]::placeholder{ color: rgba(42,32,54,0.35); }
+
+  .response-line{
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--rose);
+    font-size: 19px;
+    margin-top: 4px;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+  }
+  @keyframes fadeIn{ to { opacity: 1; } }
+
+  .progress{
+    display: flex;
+    gap: 7px;
+    justify-content: center;
+    margin-top: 34px;
+  }
+  .progress span{
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(42,32,54,0.2);
+  }
+  .progress span.done{ background: var(--gold); }
+  .progress span.current{ background: var(--rose); }
+
+  .stars-field{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 8px 0 4px;
+  }
+  .reason-star{
+    background: transparent;
+    border: none;
+    padding: 14px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .reason-star svg{
+    width: 26px; height: 26px;
+    transition: transform 0.3s ease;
+  }
+  .reason-star:hover svg, .reason-star:focus-visible svg{ transform: scale(1.15); }
+  .reason-star.revealed svg path{ fill: var(--gold); }
+  .reason-star:not(.revealed) svg path{ fill: rgba(42,32,54,0.25); }
+  .reason-text{
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--text-on-paper);
+    min-height: 20px;
+  }
+
+  .signature{
+    font-family: var(--serif);
+    font-style: italic;
+    text-align: right;
+    color: var(--text-muted);
+    margin-top: 22px;
+    font-size: 19px;
+  }
+
+  .heart-burst{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .heart-burst span{
+    position: absolute;
+    font-size: 20px;
+    animation: floatUp 2.4s ease-out forwards;
+    opacity: 0;
+  }
+  @keyframes floatUp{
+    0% { opacity: 0; transform: translateY(0) scale(0.6); }
+    15% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-160px) scale(1.1); }
+  }
+
+  @media (max-width: 480px){
+    .card{ padding: 40px 26px 34px; }
+    .stars-field{ grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation: none; }
+    .star{ animation: none; opacity: 0.4; }
+    .response-line{ animation: none; opacity: 1; }
+    .reason-star svg{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" id="sky"></div>
+<main class="stage">
+  <div class="card" id="card"></div>
+</main>
+
+<script>
+  // ---------- state ----------
+  let name = "";
+  let feeling = "";
+  let thought = "";
+  let revealedReasons = new Set();
+  let step = 0;
+
+  const REASONS = [
+    "You remember the small things I forget about myself.",
+    "You make ordinary evenings feel worth keeping.",
+    "You tell me the truth, even when it costs you something.",
+    "You stayed, on the days I made that hard.",
+    "You still choose this. You still choose us.",
+    "You never let me disappear into being wrong."
+  ];
+
+  const STEPS = ["intro","name","feeling","apology","thought","reveal","closing"];
+
+  function getName(){ return name.trim() ? name.trim() : "you"; }
+
+  // ---------- star field ----------
+  function buildSky(){
+    const sky = document.getElementById('sky');
+    const count = window.innerWidth < 500 ? 30 : 55;
+    for(let i=0;i<count;i++){
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random()*2 + 1;
+      s.style.width = size+'px';
+      s.style.height = size+'px';
+      s.style.left = Math.random()*100+'vw';
+      s.style.top = Math.random()*100+'vh';
+      s.style.animationDelay = (Math.random()*4)+'s';
+      sky.appendChild(s);
+    }
+  }
+
+  function heartIcon(){
+    return `<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-10.2-9.3C.2 8.7 1.3 5.4 4.3 4.3 6.5 3.5 8.7 4.4 12 8c3.3-3.6 5.5-4.5 7.7-3.7 3 1.1 4.1 4.4 2.5 7.4C19.5 16.3 12 21 12 21z"/></svg>`;
+  }
+  function starIcon(){
+    return `<svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.6L21 10l-5.4 4 2 6.6L12 17l-5.6 3.6 2-6.6L3 10l6.4-1.4z"/></svg>`;
+  }
+
+  function progressDots(){
+    const idx = STEPS.indexOf(currentStep);
+    let html = '<div class="progress">';
+    STEPS.forEach((s, i) => {
+      let cls = i < idx ? 'done' : (i === idx ? 'current' : '');
+      html += `<span class="${cls}"></span>`;
+    });
+    html += '</div>';
+    return html;
+  }
+
+  let currentStep = "intro";
+
+  function render(){
+    const card = document.getElementById('card');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = 'rise 0.55s cubic-bezier(.19,1,.22,1)';
+    card.innerHTML = views[currentStep]();
+    attachHandlers();
+  }
+
+  const views = {
+
+    intro: () => `
+      <div class="eyebrow-mark">${heartIcon()}</div>
+      <h1>A letter, waiting</h1>
+      <p class="lede">Something I've wanted to say to you properly.<br>It'll only take a few minutes.</p>
+      <div class="actions">
+        <button class="btn-primary" id="next">Open it</button>
+      </div>
+    `,
+
+    name: () => `
+      <h2>Before I say anything else —</h2>
+      <p>What should I call you, here?</p>
+      <input type="text" id="nameInput" placeholder="your name" value="${name}" autocomplete="off">
+      <div class="actions">
+        <button class="btn-primary" id="next">Continue</button>
+      </div>
+    `,
+
+    feeling: () => `
+      <h2>${getName()}, how are you feeling —</h2>
+      <p>right now, in this moment, before you read on?</p>
+      <div class="actions row">
+        ${["Hurt","Confused","Worn out","Not sure"].map(opt =>
+          `<button class="btn-option" data-val="${opt}">${opt}</button>`
+        ).join('')}
+      </div>
+      <div id="feelingResponse"></div>
+      <div class="actions" style="margin-top:22px;">
+        <button class="btn-primary" id="next" style="display:none;">Continue</button>
+      </div>
+    `,
+
+    apology: () => `
+      <h2>Then let me say this first.</h2>
+      <p>I keep going back to it — the version of me that hurt you, and how easy it would have
+      been to choose differently in that moment. I didn't, and you felt the weight of that.</p>
+      <p>I'm sorry. Not the kind of sorry that wants to be over quickly, but the kind that
+      sits with what it cost you — your patience, your trust, an evening that should have
+      been easy and wasn't.</p>
+      <p>I see it now. I see you, ${getName()}, and what I put you through.</p>
+      <div class="actions">
+        <button class="btn-primary" id="next">Keep reading</button>
+      </div>
+    `,
+
+    thought: () => `
+      <h2>Can I ask you something?</h2>
+      <p>What do you think crosses my mind most, these days?</p>
+      <div class="actions row">
+        ${["Us","You","The mistake","Everything"].map(opt =>
+          `<button class="btn-option" data-val="${opt}">${opt}</button>`
+        ).join('')}
+      </div>
+      <div id="thoughtResponse"></div>
+      <div class="actions" style="margin-top:22px;">
+        <button class="btn-primary" id="next" style="display:none;">Continue</button>
+      </div>
+    `,
+
+    reveal: () => `
+      <h2>The truth is, it's all three.</h2>
+      <p>But mostly, it's this — the reasons you matter to me, more than I've said out loud
+      lately. Tap a star for each one.</p>
+      <div class="stars-field">
+        ${REASONS.map((r, i) => `
+          <button class="reason-star ${revealedReasons.has(i) ? 'revealed' : ''}" data-idx="${i}">
+            ${starIcon()}
+            <span class="reason-text">${revealedReasons.has(i) ? r : ''}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="actions" style="margin-top:10px;">
+        <button class="btn-primary" id="next" ${revealedReasons.size < REASONS.length ? 'style="opacity:0.4;pointer-events:none;"' : ''}>
+          ${revealedReasons.size < REASONS.length ? `${REASONS.length - revealedReasons.size} left` : 'Finish the letter'}
+        </button>
+      </div>
+    `,
+
+    closing: () => `
+      <h2>So, ${getName()} —</h2>
+      <p>I'm sorry for the moment that started all this. And I'm grateful, more than sorry,
+      for every ordinary day you've stayed close enough to let me make it right.</p>
+      <p>You don't have to answer this letter. You don't have to feel anything in particular
+      because of it. I just wanted you to know, plainly, in writing, where I stand.</p>
+      <p class="signature">SIGNATURE_LINE — still learning, still yours.</p>
+      <div class="actions row" style="margin-top:26px;">
+        <button class="btn-primary" id="loveBtn">I love you</button>
+        <button class="btn-link" id="restart">Read it again</button>
+      </div>
+    `
+  };
+
+  function attachHandlers(){
+    const card = document.getElementById('card');
+    const nextBtn = card.querySelector('#next');
+    if(nextBtn){
+      nextBtn.addEventListener('click', () => {
+        const idx = STEPS.indexOf(currentStep);
+        currentStep = STEPS[idx+1];
+        render();
+      });
+    }
+
+    if(currentStep === 'name'){
+      const input = card.querySelector('#nameInput');
+      input.focus();
+      input.addEventListener('input', e => { name = e.target.value; });
+      input.addEventListener('keydown', e => { if(e.key === 'Enter'){ nextBtn.click(); } });
+    }
+
+    if(currentStep === 'feeling' || currentStep === 'thought'){
+      const responses = {
+        feeling: {
+          "Hurt": "That's fair. I put it there, and I hate that I did.",
+          "Confused": "I understand. I haven't made it easy to see what I meant.",
+          "Worn out": "I know. You've carried more than your share of this lately.",
+          "Not sure": "That's okay too. You don't need the words for it yet."
+        },
+        thought: {
+          "Us": "You're right. More than I've said.",
+          "You": "You're right about that too.",
+          "The mistake": "Some. But not as much as you might think.",
+          "Everything": "Yes. All of it, all at once, most days."
+        }
+      };
+      const options = card.querySelectorAll('.btn-option');
+      const responseBox = card.querySelector(currentStep === 'feeling' ? '#feelingResponse' : '#thoughtResponse');
+      options.forEach(btn => {
+        btn.addEventListener('click', () => {
+          options.forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          const val = btn.dataset.val;
+          if(currentStep === 'feeling') feeling = val; else thought = val;
+          responseBox.innerHTML = `<p class="response-line">${responses[currentStep][val]}</p>`;
+          nextBtn.style.display = 'inline-block';
+        });
+      });
+    }
+
+    if(currentStep === 'reveal'){
+      card.querySelectorAll('.reason-star').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.idx, 10);
+          if(revealedReasons.has(i)) return;
+          revealedReasons.add(i);
+          btn.classList.add('revealed');
+          btn.querySelector('.reason-text').textContent = REASONS[i];
+          const doneCount = revealedReasons.size;
+          const total = REASONS.length;
+          const nb = card.querySelector('#next');
+          nb.textContent = doneCount < total ? `${total - doneCount} left` : 'Finish the letter';
+          if(doneCount === total){
+            nb.style.opacity = '1';
+            nb.style.pointerEvents = 'auto';
+          }
+        });
+      });
+    }
+
+    if(currentStep === 'closing'){
+      card.querySelector('#loveBtn').addEventListener('click', burstHearts);
+      card.querySelector('#restart').addEventListener('click', () => {
+        currentStep = 'intro';
+        revealedReasons = new Set();
+        render();
+      });
+    }
+  }
+
+  function burstHearts(){
+    const layer = document.createElement('div');
+    layer.className = 'heart-burst';
+    document.body.appendChild(layer);
+    for(let i=0;i<14;i++){
+      const h = document.createElement('span');
+      h.textContent = Math.random() > 0.5 ? '♥' : '✦';
+      h.style.left = (45 + Math.random()*10) + 'vw';
+      h.style.bottom = (10 + Math.random()*10) + 'vh';
+      h.style.color = Math.random() > 0.5 ? '#c9a461' : '#b8677d';
+      h.style.animationDelay = (Math.random()*0.4)+'s';
+      layer.appendChild(h);
+    }
+    setTimeout(() => layer.remove(), 3000);
+  }
+
+  buildSky();
+  render();
+</script>
+</body>
+</html>
